@@ -46,12 +46,11 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
-  lib/xspublic
+  /usr/local/xsens/include
   ${catkin_INCLUDE_DIRS}
 )
 
-link_directories(lib/xspublic/xscontroller lib/xspublic/xscommon lib/xspublic/xstypes)
+link_directories(/usr/local/xsens/lib)
 add_executable(
 	xsens_mti_node
 	src/main.cpp
@@ -60,9 +59,8 @@ add_executable(
 )
 target_link_libraries(
 	xsens_mti_node
-	xscontroller
-	xscommon
 	xstypes
+  xsensdeviceapi
 	pthread
 	dl
 	${catkin_LIBRARIES}
