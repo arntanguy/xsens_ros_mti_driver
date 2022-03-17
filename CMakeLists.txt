@@ -1,8 +1,10 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.1)
 project(xsens_mti_driver)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/CMakeModules)
+set(CMAKE_CXX_STANDARD 11)
 
-## Compile as C++11, supported in ROS Kinetic and newer
-add_compile_options(-std=c++11)
+# Use MTSDK_PREFIX if mtsdk is not installed in its standard directory
+find_package(mtsdk REQUIRED COMPONENTS xstypes xsensdeviceapi)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -16,19 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
 )
 
-
-###################################
-## catkin specific configuration ##
-###################################
-## The catkin_package macro generates cmake config files for your package
-## Declare things to be passed to dependent projects
-## INCLUDE_DIRS: uncomment this if your package contains header files
-## LIBRARIES: libraries you create in this project that dependent projects also need
-## CATKIN_DEPENDS: catkin_packages dependent projects also need
-## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES xsens_mti_driver
   CATKIN_DEPENDS
   roscpp
   tf2
@@ -36,21 +26,12 @@ catkin_package(
   sensor_msgs
   std_msgs
   geometry_msgs
-#  DEPENDS system_lib
 )
 
-###########
-## Build ##
-###########
-
-## Specify additional locations of header files
-## Your package locations should be listed before other locations
 include_directories(
-  /usr/local/xsens/include
   ${catkin_INCLUDE_DIRS}
 )
 
-link_directories(/usr/local/xsens/lib)
 add_executable(
 	xsens_mti_node
 	src/main.cpp
@@ -59,10 +40,7 @@ add_executable(
 )
 target_link_libraries(
 	xsens_mti_node
-	xstypes
-  xsensdeviceapi
-	pthread
-	dl
+  PUBLIC
 	${catkin_LIBRARIES}
 )
-
+target_link_libraries(xsens_mti_node PUBLIC mtsdk::xstypes mtsdk::xsensdeviceapi)
